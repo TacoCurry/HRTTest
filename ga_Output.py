@@ -9,7 +9,6 @@ def result_print(n_core, solution, file="input_ga_result.txt"):
         f.write("{}\n".format(n_core))
         for a, b in zip(solution.genes_processor, solution.genes_memory):
             f.write("{} {}\n".format(a, b))
-        f.write("\n")
     return True
 
 
