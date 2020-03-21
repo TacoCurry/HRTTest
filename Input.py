@@ -100,7 +100,7 @@ def set_ga_results(rt_tasks, input_file="input_ga_result.txt"):
                 task.ga_processor_modes = [0 for _ in range(max_core + 1)]
                 task.ga_memory_modes = [0 for _ in range(max_core + 1)]
 
-            for core in (max_core, min_core - 1, -1):
+            for core in range(max_core, min_core - 1, -1):
                 f.readline()
                 for task in rt_tasks:
                     line = list(map(int, f.readline().split()))

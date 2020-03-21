@@ -1,6 +1,6 @@
 def first_print(max_core, min_core, file="input_ga_result.txt"):
     with open(file, "a", encoding='UTF8') as f:
-        f.write("{} {}\n\n".format(max_core, min_core))
+        f.write("{} {}\n".format(max_core, min_core))
     return True
 
 
