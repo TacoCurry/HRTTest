@@ -1,3 +1,9 @@
+def first_print(max_core, min_core, file="input_ga_result.txt"):
+    with open(file, "a", encoding='UTF8') as f:
+        f.write("{} {}\n\n".format(max_core, min_core))
+    return True
+
+
 def result_print(n_core, solution, file="input_ga_result.txt"):
     with open(file, "a", encoding='UTF8') as f:
         f.write("{}\n".format(n_core))

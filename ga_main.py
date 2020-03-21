@@ -17,6 +17,8 @@ def ga_run():
     original_utils = sum([task.wcet / task.period for task in Solution.rt_tasks])
     print("Original Total util: {}".format(original_utils))
 
+    first_print(Solution.processor.n_core, math.ceil(original_utils))
+
     for core_max in range(Solution.processor.n_core, math.ceil(original_utils)-1, -1):
         # 1. Make initial solution set
         Solution.set_random_seed()
@@ -64,4 +66,4 @@ def ga_run():
                 break
 
 
-run()
+# run()

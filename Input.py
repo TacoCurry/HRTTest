@@ -93,6 +93,7 @@ def get_non_rt_tasks(input_file="input_nonrt_tasks.txt"):
 def set_ga_results(rt_tasks, input_file="input_ga_result.txt"):
     try:
         with open(input_file, "r", encoding='UTF8') as f:
+            f.readline()
             max_core, min_core = tuple(map(int, f.readline().split()))
 
             for task in rt_tasks:
