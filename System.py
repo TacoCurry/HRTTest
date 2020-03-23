@@ -144,6 +144,7 @@ class System(metaclass=ABCMeta):
                 turnaround_time = non_rt_task.end_time - non_rt_task.at
                 total_turnaround_time += turnaround_time
 
+        print("Executed non-rt-tasks n: {}".format(count))
         print(f'Average wait time: {format(total_wait_time / count, ".4f")}')
         print(f'Average response time: {format(total_response_time / count, ".4f")}')
         print(f'Average turnaround time: {format(total_turnaround_time / count, ".4f")}')
