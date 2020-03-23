@@ -2,14 +2,14 @@ from System import System
 import heapq
 
 
-class SystemPS(System):
+class SystemRS(System):
     # 대기중인 non-rt-task가 존재하면 rt task는 (N-1) 개의 코어로 실행하고
     # 1개의 코어로는 non-rt-task를 수행한다.
     # 존재하지 않는다면 유전 알고리즘 결과를 이용하여 N개의 코어에서 실행.
 
     def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
-        self.name = "PS(processsor-single)"
+        self.name = "RS(Reserved-Single)"
 
     def run(self):
         util_original = self.calc_original_util()
@@ -33,29 +33,24 @@ class SystemPS(System):
             self.check_new_non_rt(cur_time)  # 새롭게 들어온 non_rt_job이 있는지 확인
 
             # 새롭게 주기 시작하는 job이 있는지 확인.
+            mode = self.processor.n_core - 1
             for new_start_rt_task in self.check_wait_period_queue(cur_time):
+                new_start_rt_task.set_exec_mode(self.processor, self.memories, 'G', mode)
                 self.push_rt_queue(new_start_rt_task)
 
             # 2. 이번 퀀텀에 실행될 Task 고르기
             rt_exec_tasks = []
             non_rt_exec_tasks = []
 
-            # non-rt 없으면 전체코어-GA 모드로, 있으면 코어한개제외-GA 모드로
-            mode = self.processor.n_core if len(self.non_rt_queue) == 0 else self.processor.n_core - 1
-            for i, rt_task in enumerate(self.rt_queue):
-                rt_task.set_exec_mode(self.processor, self.memories, 'G', mode)
-                if rt_task.is_finish():
-                    rt_task.init_job()
-                    self.push_rt_wait_queue(self.rt_queue.pop(i))
-            heapq.heapify(self.rt_queue)
-
-            # RT-Task 고르기
-            for _ in range(min(mode, len(self.rt_queue))):
-                rt_exec_tasks.append(heapq.heappop(self.rt_queue))
-
-            # 이번 퀀텀에 실행할 Non-RT-task 고르기
-            for _ in range(min(self.processor.n_core - len(rt_exec_tasks), len(self.non_rt_queue))):
+            if len(self.non_rt_queue) > 0:
                 non_rt_exec_tasks.append(self.non_rt_queue.popleft())
+                for _ in range(min(mode, len(self.rt_queue))):
+                    rt_exec_tasks.append(heapq.heappop(self.rt_queue))
+                for _ in range(min(len(self.non_rt_queue), self.processor.n_core - len(rt_exec_tasks) - len(non_rt_exec_tasks))):
+                    non_rt_exec_tasks.append(self.non_rt_queue.popleft())
+            else:
+                for _ in range(min(self.processor.n_core, len(self.rt_queue))):
+                    rt_exec_tasks.append(heapq.heappop(self.rt_queue))
 
             # 3. Task 실행하기
             # 3.0 util 계산하기

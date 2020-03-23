@@ -70,6 +70,8 @@ class RTTask:
         changed_det_remain = det_remain * min(pre_processor_mode.wcet_scale, pre_memory.wcet_scale) / min(
             new_processor_mode.wcet_scale, new_memory.wcet_scale)
         self.det = round(det_executed + changed_det_remain)
+        if self.det == 0:
+            self.det = 1
 
         self.exec_mode = mode
         self.ga_mode = ga_mode

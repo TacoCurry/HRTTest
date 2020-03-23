@@ -2,8 +2,8 @@ from SystemOriginal import SystemOriginal
 from SystemGA import SystemGA
 from SystemIGA import SystemIGA
 from SystemADH import SystemADH
-from SystemPS import SystemPS
 from SystemPM import SystemPM
+from SystemRS import SystemRS
 from Input import *
 from Task import RTTask, NonRTTask
 
@@ -45,14 +45,14 @@ def hrt_run():
 
     SystemADH(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks).run()
 
-    # PS(비실시간 담당 코어가 1)
+    # RS
     RTTask.total_power = NonRTTask.total_power = 0
     sim_time, verbose, processor, memories = get_configuration()
     rt_tasks = get_rt_tasks()
     non_rt_tasks = get_non_rt_tasks()
     set_ga_results(rt_tasks)
 
-    SystemPS(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks).run()
+    SystemRS(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks).run()
 
     # PM(비실시간 담당 코어가 다수일 수 있음)
     RTTask.total_power = NonRTTask.total_power = 0
