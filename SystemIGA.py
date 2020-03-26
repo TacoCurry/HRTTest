@@ -34,6 +34,7 @@ class SystemIGA(System):
             exec_mode = 'G' if len(self.non_rt_queue) == 0 else 'O'
             for rt_task in self.rt_queue:
                 rt_task.set_exec_mode(self.processor, self.memories, exec_mode)
+            heapq.heapify(self.rt_queue)
 
             # 2. 이번 퀀텀에 실행될 Task 고르기
             rt_exec_tasks = []
