@@ -83,7 +83,7 @@ class System(metaclass=ABCMeta):
         self.sum_utils += util
 
     def calc_original_util(self):
-        return sum([task.wcet/task.period for task in self.rt_tasks])
+        return sum([task.wcet / task.period for task in self.rt_tasks])
 
     def print_final_report(self):
         print("===============final report===============")
@@ -102,6 +102,8 @@ class System(metaclass=ABCMeta):
     def print_task_num(self):
         print(f'Number of RT task: {len(self.rt_tasks)}')
         print(f'Number of non RT task: {len(self.non_rt_tasks)}')
+        print("Average non-rt task bt: {}".format(
+            sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)), ".4f")
         print(f'Number of total task: {len(self.rt_tasks)} + {len(self.non_rt_tasks)}')
 
     def print_policy_name(self):
