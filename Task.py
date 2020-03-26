@@ -33,7 +33,7 @@ class RTTask:
 
     def desc_task(self) -> str:
         return (f'    [type:RT, no:{self.no}, wcet:{self.wcet}, period:{self.period}, ' +
-                f'det:{self.det}, i_job:{self.i_job}, exec_mode:{self.exec_mode}, deadline:{self.deadline}, ' +
+                f'det:{self.det}, i_job:{self.i_job}, exec_mode:{self.exec_mode}, ga_mode:{self.ga_mode}, deadline:{self.deadline}, ' +
                 "d:{}, D:{}, b:{}]".format(self.d, self.D, self.b))
 
     def __lt__(self, other):
@@ -69,7 +69,7 @@ class RTTask:
         det_remain = self.det - det_executed
         changed_det_remain = det_remain * min(pre_processor_mode.wcet_scale, pre_memory.wcet_scale) / min(
             new_processor_mode.wcet_scale, new_memory.wcet_scale)
-        self.det = round(det_executed + changed_det_remain)
+        self.det = math.floor(det_executed + changed_det_remain)
         if self.det == 0:
             self.det = 1
 
@@ -118,7 +118,7 @@ class RTTask:
         self.b = 1
 
     def calc_D_for_pd2(self):
-        self.D = math.ceil(math.ceil(math.ceil(self.d) * (1 - self.det / self.period)) / (1 - self.det / self.period))
+        self.D = math.ceil(math.ceil(self.d * (1 - self.det / self.period)) / (1 - self.det / self.period))
 
     def is_deadline_violated(self, cur_time):
         if self.deadline <= cur_time:
