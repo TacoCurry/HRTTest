@@ -69,7 +69,7 @@ class RTTask:
         det_remain = self.det - det_executed
         changed_det_remain = det_remain * min(pre_processor_mode.wcet_scale, pre_memory.wcet_scale) / min(
             new_processor_mode.wcet_scale, new_memory.wcet_scale)
-        self.det = math.floor(det_executed + changed_det_remain)
+        self.det = det_executed + changed_det_remain
         if self.det == 0:
             self.det = 1
 
@@ -126,7 +126,7 @@ class RTTask:
         return True
 
     def is_finish(self):
-        return self.i_job >= self.det + 1
+        return self.i_job >= math.ceil(self.det) + 1
 
     def exec_idle(self, memories, quantum=1):
         memory = memories.list[0] if self.exec_mode == 'O' else memories.list[self.ga_memory_modes[self.ga_mode]]
