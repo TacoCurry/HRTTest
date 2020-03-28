@@ -11,7 +11,7 @@ class SystemPM(System):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
         self.max_core = max_core
         self.min_core = min_core
-        self.name = "PM(processsor-Multi)"
+        self.name = "PM(processor-Multi)"
 
     def run(self):
         util_original = self.calc_original_util()
