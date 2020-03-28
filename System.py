@@ -102,9 +102,11 @@ class System(metaclass=ABCMeta):
     def print_task_num(self):
         print(f'Number of RT task: {len(self.rt_tasks)}')
         print(f'Number of non RT task: {len(self.non_rt_tasks)}')
-        print("Average non-rt task bt: {}".format(
-            sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)), ".4f")
+        print(f'Average non-rt task bt: {format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks), ".4f")}')
         print(f'Number of total task: {len(self.rt_tasks)} + {len(self.non_rt_tasks)}')
+
+
+
 
     def print_policy_name(self):
         print(f'Name of policy: {self.name}')
