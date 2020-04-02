@@ -110,15 +110,15 @@ class RTTask:
         self.calc_D_for_pd2()
 
     def calc_d_for_pd2(self):
-        self.d = math.ceil((self.k * self.det + self.i_job) / (self.det / self.period))
+        self.d = math.ceil((self.k * math.ceil(self.det) + self.i_job) / (math.ceil(self.det) / self.period))
 
     def calc_b_for_pd2(self):
-        if abs(self.d - (self.k * self.det + self.i_job) / (self.det / self.period)) <= RTTask.EPS:
+        if abs(self.d - (self.k * math.ceil(self.det) + self.i_job) / (math.ceil(self.det) / self.period)) <= RTTask.EPS:
             self.b = 0
         self.b = 1
 
     def calc_D_for_pd2(self):
-        self.D = math.ceil(math.ceil(self.d * (1 - self.det / self.period)) / (1 - self.det / self.period))
+        self.D = math.ceil(math.ceil(self.d * (1 - math.ceil(self.det) / self.period)) / (1 - math.ceil(self.det) / self.period))
 
     def is_deadline_violated(self, cur_time):
         if self.deadline <= cur_time:

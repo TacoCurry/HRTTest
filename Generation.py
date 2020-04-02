@@ -7,8 +7,7 @@ class TaskGen:
         # 입력 정보
         self.n_cores = None
         self.n_tasks = None
-        self.wcet_min = None
-        self.wcet_max = None
+        self.period = None
         self.mem_total = None
         self.util_cpu = None
         self.total_mem_usage = None
@@ -39,9 +38,10 @@ class TaskGen:
         print(f'mem_req_total: {format(self.mem_req_total, ".0f")}')
 
     def do_gen_task(self, input_file, util_cpu_1_task, mem_req_1_task):
-        wcet = self.wcet_min + self.get_rand(self.wcet_max - self.wcet_min)
-        duration = wcet / util_cpu_1_task + int(self.get_rand(wcet / util_cpu_1_task / 2)) - int(
-            self.get_rand(wcet / util_cpu_1_task / 2))
+        # wcet = self.wcet_min + self.get_rand(self.wcet_max - self.wcet_min)
+        # duration = wcet / util_cpu_1_task + int(self.get_rand(wcet / util_cpu_1_task / 2)) - int(self.get_rand(wcet / util_cpu_1_task / 2))
+        duration = self.period
+        wcet = int(duration * util_cpu_1_task) + int(self.get_rand(duration * util_cpu_1_task)) - int(self.get_rand(duration * util_cpu_1_task))
         memreq = mem_req_1_task + int(self.get_rand(mem_req_1_task / 2)) - int(self.get_rand(mem_req_1_task / 2))
         mem_active_ratio = 0.1 + self.get_rand(1000) / 10000.0 - self.get_rand(1000) / 10000.0
 
@@ -66,9 +66,9 @@ class TaskGen:
                 self.n_tasks = int(f.readline())
 
                 line = f.readline().split()
-                self.wcet_min, self.wcet_max, self.mem_total = tuple(map(int, line[:3]))
-                self.util_cpu = float(line[3])
-                self.total_mem_usage = int(line[4])
+                self.period, self.mem_total = tuple(map(int, line[:2]))
+                self.util_cpu = float(line[2])
+                self.total_mem_usage = int(line[3])
 
                 print("=======================================================")
                 print("This is the Task Generation Input")
@@ -76,8 +76,8 @@ class TaskGen:
                 print("n_cores  n_tasks")
                 print(self.n_cores, self.n_tasks)
 
-                print("wcet_min, wcet_max, mem_total, util_cpu, util_target")
-                print(self.wcet_min, self.wcet_max, self.mem_total, self.util_cpu, self.total_mem_usage)
+                print("period, mem_total, util_cpu, util_target")
+                print(self.period, self.mem_total, self.util_cpu, self.total_mem_usage)
 
         except FileNotFoundError:
             self.error("task 정보 파일을 찾을 수 없습니다.")
