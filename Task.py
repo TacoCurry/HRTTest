@@ -31,10 +31,10 @@ class RTTask:
         self.deadline = None  # 이번 주기의 데드라인을 시간에 대한 절대적 값으로 저장
         self.next_period_start = 0  # 다음 주기의 시작을 저장
 
-    def desc_task(self) -> str:
+    def desc_task(self, cur_time) -> str:
         return (f'    [type:RT, no:{self.no}, wcet:{self.wcet}, period:{self.period}, ' +
                 f'det:{self.det}, i_job:{self.i_job}, exec_mode:{self.exec_mode}, ga_mode:{self.ga_mode}, deadline:{self.deadline}, ' +
-                "d:{}, D:{}, b:{}]".format(self.d, self.D, self.b))
+                "d:{}, D:{}, b:{}]".format(self.d, self.D, self.b) + "lag:{}".format((cur_time - self.deadline + self.period) * self.det / self.period - self.i_job + 1))
 
     def __lt__(self, other):
         if self.d == other.d:
@@ -122,7 +122,7 @@ class RTTask:
 
     def is_deadline_violated(self, cur_time):
         if self.deadline <= cur_time:
-            raise Exception(self.desc_task() + ": deadline failure")
+            raise Exception(self.desc_task(cur_time) + ": deadline failure")
         return True
 
     def is_finish(self):

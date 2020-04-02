@@ -41,7 +41,7 @@ class System(metaclass=ABCMeta):
             print("==========rt_queue===========")
             while len(self.rt_queue) > 0:
                 rt_task = heapq.heappop(self.rt_queue)
-                print(rt_task.desc_task())
+                print(rt_task.desc_task(time))
                 temp_queue.append(rt_task)
             print("========rt_queue_end=========")
             heapq.heapify(temp_queue)
