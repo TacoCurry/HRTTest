@@ -17,6 +17,11 @@ class RTTask:
         self.ga_processor_modes = None
         self.ga_memory_modes = None
 
+        # DFGA의 결과로 할당된 모드 정보를 저장.
+        self.fictional_util = None
+        self.dfga_processor_modes = None
+        self.dfga_processor_modes = None
+
         # DVFS 및 HM의 적용으로 변화하는 wcet를 저장함.
         self.det = None
         self.exec_mode = None  # 'O'(Original) 혹은 'G'(GA)로 현재 실행모드를 저장함.
