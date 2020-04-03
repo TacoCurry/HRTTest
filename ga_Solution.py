@@ -1,4 +1,5 @@
 import random
+import math
 
 
 class Solution:
@@ -83,7 +84,7 @@ class Solution:
             # Calc det
             wcet_scaled_processor = 1 / processor_mode.wcet_scale
             wcet_scaled_memory = 1 / memory.wcet_scale
-            det = round(task.wcet * max(wcet_scaled_memory, wcet_scaled_processor))
+            det = math.ceil(task.wcet * max(wcet_scaled_memory, wcet_scaled_processor))
             if det == 0:
                 det = 1
             if det > task.period:

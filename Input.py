@@ -66,7 +66,7 @@ def get_rt_tasks(input_file="input_rt_tasks.txt"):
         with open(input_file, "r", encoding='UTF-8') as f:
             for i in range(int(f.readline())):
                 line = f.readline().split()
-                rt_tasks.append(RTTask(i + 1, *map(int, line[:3]), float(line[3])))
+                rt_tasks.append(RTTask(i, *map(int, line[:3]), float(line[3])))
 
         return rt_tasks
 

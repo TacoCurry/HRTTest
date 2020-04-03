@@ -54,7 +54,7 @@ class System(metaclass=ABCMeta):
             print("=======  non_rt_queue end==========")
 
     def check_new_non_rt(self, cur_time):
-        if self.non_rt_tasks_pointer < len(self.non_rt_tasks) and \
+        while self.non_rt_tasks_pointer < len(self.non_rt_tasks) and \
                 self.non_rt_tasks[self.non_rt_tasks_pointer].at == cur_time:
             self.non_rt_queue.append(self.non_rt_tasks[self.non_rt_tasks_pointer])
             self.non_rt_tasks_pointer += 1
@@ -77,7 +77,8 @@ class System(metaclass=ABCMeta):
 
     def check_rt_tasks(self, cur_time):
         for rt_task in self.rt_tasks:
-            rt_task.is_deadline_violated(cur_time)
+            if rt_task.no < len(self.rt_tasks):
+                rt_task.is_deadline_violated(cur_time)
 
     def add_cpu_utilization(self, util):
         self.sum_utils += util

@@ -17,11 +17,6 @@ class RTTask:
         self.ga_processor_modes = None
         self.ga_memory_modes = None
 
-        # DFGA의 결과로 할당된 모드 정보를 저장.
-        self.fictional_util = None
-        self.dfga_processor_modes = None
-        self.dfga_processor_modes = None
-
         # DVFS 및 HM의 적용으로 변화하는 wcet를 저장함.
         self.det = None
         self.exec_mode = None  # 'O'(Original) 혹은 'G'(GA)로 현재 실행모드를 저장함.
@@ -47,6 +42,16 @@ class RTTask:
                 return self.D >= other.D
             return self.b > other.b
         return self.d < other.d
+
+    def fic_set_exec_mode(self, processor, memories):
+        processor_mode = processor.modes[self.ga_processor_modes]
+        memory = memories.list[self.ga_memory_modes]
+        self.det = self.wcet / min(processor_mode.wcet_scale, memory.wcet_scale)
+
+        # task의 weight이 변경되었으므로 다시 계산해야함.
+        self.calc_d_for_pd2()
+        self.calc_D_for_pd2()
+        self.calc_b_for_pd2()
 
     def set_exec_mode(self, processor, memories, mode, ga_mode=None):
         # 'G(GA)' 혹은 'O(Original)'로 실행 모드를 변경하고 det도 다시 계산.
@@ -115,15 +120,15 @@ class RTTask:
         self.calc_D_for_pd2()
 
     def calc_d_for_pd2(self):
-        self.d = math.ceil((self.k * math.ceil(self.det) + self.i_job) / (math.ceil(self.det) / self.period))
+        self.d = math.ceil((self.k * self.det + self.i_job) / (self.det / self.period))
 
     def calc_b_for_pd2(self):
-        if abs(self.d - (self.k * math.ceil(self.det) + self.i_job) / (math.ceil(self.det) / self.period)) <= RTTask.EPS:
+        if abs(self.d - (self.k * self.det + self.i_job) / (self.det / self.period)) <= RTTask.EPS:
             self.b = 0
         self.b = 1
 
     def calc_D_for_pd2(self):
-        self.D = math.ceil(math.ceil(self.d * (1 - math.ceil(self.det) / self.period)) / (1 - math.ceil(self.det) / self.period))
+        self.D = math.ceil(math.ceil(self.d * (1 - self.det / self.period)) / (1 - self.det / self.period))
 
     def is_deadline_violated(self, cur_time):
         if self.deadline <= cur_time:
