@@ -42,6 +42,8 @@ class TaskGen:
         # duration = wcet / util_cpu_1_task + int(self.get_rand(wcet / util_cpu_1_task / 2)) - int(self.get_rand(wcet / util_cpu_1_task / 2))
         duration = self.period
         wcet = int(duration * util_cpu_1_task) + int(self.get_rand(duration * util_cpu_1_task)) - int(self.get_rand(duration * util_cpu_1_task))
+        if wcet == 0:
+            wcet = 1
         memreq = mem_req_1_task + int(self.get_rand(mem_req_1_task / 2)) - int(self.get_rand(mem_req_1_task / 2))
         mem_active_ratio = 0.1 + self.get_rand(1000) / 10000.0 - self.get_rand(1000) / 10000.0
 
