@@ -5,8 +5,7 @@ from hrt_main import *
 from DFGA import *
 
 # TaskGen().gen_task()
-# non_rt_gen()
-# ga_run()
+non_rt_gen()
 # dfga_run()
 hrt_run()
 
