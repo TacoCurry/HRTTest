@@ -30,14 +30,18 @@ def non_rt_gen():
     period = get_period()
     task_per_period = round(period * arr_rate)
     rt_tasks = get_rt_tasks()
-    wcet_mean = round(sum([task.wcet for task in rt_tasks])/len(rt_tasks))
+    wcet_mean = round(sum([task.wcet for task in rt_tasks])/len(rt_tasks) * 25)
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
         time = period
         tasks = []
         while time < sim_time:
-            n_task = task_per_period + int(random.randrange(task_per_period/2)) \
-                     - int(random.randrange(task_per_period/2))
+            if task_per_period == 0:
+                n_task = 1 if random.random() <= period * arr_rate else 0
+            else:
+                n_task = task_per_period + int(random.randrange(task_per_period/2)) \
+                        - int(random.randrange(task_per_period/2))
+
             for _ in range(n_task):
                 tasks.append((time, wcet_mean + int(random.randrange(wcet_mean/2)
                                                     - int(random.randrange(wcet_mean/2)))))
