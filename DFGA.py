@@ -12,6 +12,9 @@ def get_period(input_file="input/input_rt_gen.txt"):
         int(f.readline())
         return int(f.readline().split()[0])
 
+def get_df(input_file="input/df.txt"):
+    with open(input_file, "r", encoding='UTF8') as f:
+        return int(f.readline())
 
 def dfga_run():
     # Input from files
@@ -19,6 +22,7 @@ def dfga_run():
     Solution.processor, Solution.memories, Solution.ga_configs = processor, memories, ga_configs
     rt_tasks = get_rt_tasks()
     period = get_period()
+    df = get_df()
 
     # Initiate out.txt
     with open("input_dfga_result.txt", "w+", encoding='UTF8') as f:
@@ -30,20 +34,20 @@ def dfga_run():
     original_utils = sum([task.wcet / task.period for task in rt_tasks])
     print("Original Total util: {}".format(original_utils))
     fictional_util = 0
-    margin = (Solution.processor.n_core - original_utils) / 10
+    margin = (Solution.processor.n_core - original_utils) / df
 
     mem_req = max([task.mem_req for task in rt_tasks])
     mem_util = max([task.mem_active_ratio for task in rt_tasks])
 
-    for _ in range(11):
+    for _ in range(df + 1):
         n_task = math.ceil(fictional_util)
         util_per_task = fictional_util / n_task if n_task else 0
         Solution.rt_tasks = copy.deepcopy(rt_tasks)
         with open("input_dfga_fictional_task_result.txt", "a+", encoding='UTF8') as f:
             f.write("{}\n".format(fictional_util))
             for _ in range(n_task):
-                f.write("{} {} {} {}\n".format(math.floor(util_per_task * period), period, mem_req, mem_util))
-                Solution.rt_tasks.append(RTTask(math.floor(util_per_task * period), period, mem_req, mem_util))
+                f.write("{} {} {} {}\n".format(math.floor(util_per_task * period - 0.05), period, mem_req, mem_util))
+                Solution.rt_tasks.append(RTTask(math.floor(util_per_task * period - 0.05), period, mem_req, mem_util))
             f.write("\n")
 
         # 1. Make initial solution set

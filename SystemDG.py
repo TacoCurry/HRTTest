@@ -10,11 +10,16 @@ def get_period(input_file="input/input_rt_gen.txt"):
         return int(f.readline().split()[0])
 
 
-def get_fic_tasks(rt_tasks, input_file="input_dfga_fictional_task_result.txt"):
+def get_df(input_file="input/df.txt"):
     with open(input_file, "r", encoding='UTF8') as f:
-        fic_tasks = [[] for _ in range(11)]
+        return int(f.readline())
+
+
+def get_fic_tasks(rt_tasks, df, input_file="input_dfga_fictional_task_result.txt"):
+    with open(input_file, "r", encoding='UTF8') as f:
+        fic_tasks = [[] for _ in range(df + 1)]
         fic_util = []
-        for i in range(11):
+        for i in range(df + 1):
             fic_util.append(float(f.readline()))
             task_no = len(rt_tasks) - 1
             while True:
@@ -27,13 +32,13 @@ def get_fic_tasks(rt_tasks, input_file="input_dfga_fictional_task_result.txt"):
         return fic_tasks, fic_util
 
 
-def set_ga_results(rt_tasks, fic_tasks, input_file="input_dfga_result.txt"):
+def set_ga_results(rt_tasks, fic_tasks, df, input_file="input_dfga_result.txt"):
     with open(input_file, "r", encoding='UTF8') as f:
         for task in rt_tasks:
-            task.ga_processor_modes = [0 for _ in range(11)]
-            task.ga_memory_modes = [0 for _ in range(11)]
+            task.ga_processor_modes = [0 for _ in range(df + 1)]
+            task.ga_memory_modes = [0 for _ in range(df + 1)]
 
-        for i in range(11):
+        for i in range(df + 1):
             f.readline()
             task_no = -1
             while True:
@@ -55,10 +60,11 @@ class SystemDG(System):
 
     def run(self):
         util_original = self.calc_original_util()
-        margin = (self.processor.n_core - util_original) / 10
+        df = get_df()
+        margin = (self.processor.n_core - util_original) / df
         period = get_period()
-        fic_tasks, fic_util = get_fic_tasks(self.rt_tasks)
-        set_ga_results(self.rt_tasks, fic_tasks)
+        fic_tasks, fic_util = get_fic_tasks(self.rt_tasks, df)
+        set_ga_results(self.rt_tasks, fic_tasks, df)
 
         # Initialize rt-tasks
         for rt_task in self.rt_tasks:
@@ -79,9 +85,9 @@ class SystemDG(System):
 
             if cur_time % period == 0:
                 bt_sum = sum([task.bt - task.exec_time for task in self.non_rt_queue])
-                mode = round(bt_sum / (period * self.processor.n_core) / margin) + 10
-                if mode > 10:
-                    mode = 10
+                mode = round(bt_sum / (period * self.processor.n_core) / margin) + df
+                if mode > df:
+                    mode = df
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):
                     new_start_rt_task.set_exec_mode(self.processor, self.memories, 'G', mode)
                     self.push_rt_queue(new_start_rt_task)
