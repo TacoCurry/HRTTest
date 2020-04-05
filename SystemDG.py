@@ -128,21 +128,13 @@ class SystemDG(System):
                 print("{}~{} quantum, RT-Task {} 실행함".format(cur_time, cur_time + 1,
                                                              ",".join(
                                                                  map(lambda task: str(task.no), rt_exec_tasks))))
+            non_rt_count = 0
             for rt_task in rt_exec_tasks:
                 if rt_task.no < len(self.rt_tasks):
                     rt_task.exec_active(self.processor, self.memories)  # 실행
                 else:
                     if len(self.non_rt_queue) > 0:
-                        non_rt_task = self.non_rt_queue.popleft()
-                        non_rt_task.exec_active(self.processor, self.memories, cur_time)  # 실행
-                        if self.verbose != System.VERBOSE_SIMPLE:
-                            print("{}~{} quantum, Non-RT-Task {} 실행함".format(cur_time, cur_time+1, non_rt_task.no))
-                        if non_rt_task.is_end():
-                            # 이번 주기에 실행을 완료했다면
-                            non_rt_task.end_time = cur_time + 1
-                        else:
-                            # 아직 실행이 남았다면 다시 대기 큐에 넣기
-                            self.non_rt_queue.append(non_rt_task)
+                        non_rt_count += 1
                     rt_task.i_job += 1
                     rt_task.calc_d_for_pd2()
                     rt_task.calc_b_for_pd2()
@@ -156,6 +148,18 @@ class SystemDG(System):
                 else:
                     # 이번 주기 실행할 것 남았다면 다시 대기 큐에 넣기
                     self.push_rt_queue(rt_task)
+
+            non_rt_tasks = [self.non_rt_queue.popleft() for _ in range(min(len(self.non_rt_queue), non_rt_count))]
+            for non_rt_task in non_rt_tasks:
+                non_rt_task.exec_active(self.processor, self.memories, cur_time)  # 실행
+                if self.verbose != System.VERBOSE_SIMPLE:
+                    print("{}~{} quantum, Non-RT-Task {} 실행함".format(cur_time, cur_time + 1, non_rt_task.no))
+                if non_rt_task.is_end():
+                    # 이번 주기에 실행을 완료했다면
+                    non_rt_task.end_time = cur_time + 1
+                else:
+                    # 아직 실행이 남았다면 다시 대기 큐에 넣기
+                    self.non_rt_queue.append(non_rt_task)
 
             # 4. 마무리
             cur_time += 1
