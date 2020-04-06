@@ -54,9 +54,9 @@ def non_rt_gen():
 
             f.write("{} {} {} {}\n".format(*task, format(mem_req, ".0f"), format(mem_active_ratio, ".6f")))
 
-    print("\n=======================================================")
-    print(f'mem_req_total: {format(mem_req_total, ".0f")}')
-    print("This is the Task Generation Output")
-    print("Generate {} tasks.".format(len(tasks)))
+    # print("\n=======================================================")
+    # print(f'mem_req_total: {format(mem_req_total, ".0f")}')
+    # print("This is the Task Generation Output")
+    # print("Generate {} tasks.".format(len(tasks)))
 
 # non_rt_gen

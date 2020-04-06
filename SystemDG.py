@@ -54,9 +54,10 @@ def set_ga_results(rt_tasks, fic_tasks, df, input_file="input_dfga_result.txt"):
                     fic_tasks[i][task_no - len(rt_tasks)].ga_memory_modes = int(line[1])
 
 class SystemDG(System):
-    def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks):
+    def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks, mode):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
-        self.name = "DG(Dynamic GA)"
+        self.name = "D"
+        self.mode = mode
 
     def run(self):
         util_original = self.calc_original_util()
@@ -85,7 +86,7 @@ class SystemDG(System):
 
             if cur_time % period == 0:
                 bt_sum = sum([task.bt - task.exec_time for task in self.non_rt_queue])
-                mode = round(bt_sum / (period * self.processor.n_core) / margin) + 3
+                mode = round(bt_sum / (period * self.processor.n_core) / margin) + self.mode
                 if mode > df:
                     mode = df
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):

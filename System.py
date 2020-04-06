@@ -97,6 +97,42 @@ class System(metaclass=ABCMeta):
         self.print_util()
         print("===========================================")
 
+        import test_out_csv
+        self.memories.calc_total_power_consumed()
+
+        power_processor = self.processor.power_consumed_idle + self.processor.power_consumed_active
+        power_memory = self.memories.total_power_consumed_idle + self.memories.total_power_consumed_active
+        power_active = self.processor.power_consumed_active + self.memories.total_power_consumed_active
+        power_idle = self.processor.power_consumed_idle + self.memories.total_power_consumed_idle
+        power = power_processor + power_memory
+
+        total_wait_time = total_response_time = total_turnaround_time = count = 0
+
+        for non_rt_task in self.non_rt_tasks:
+            if non_rt_task.end_time:
+                count += 1
+                wait_time = (non_rt_task.end_time - non_rt_task.at) - non_rt_task.bt
+                total_wait_time += wait_time
+                response_time = non_rt_task.start_time - non_rt_task.at
+                total_response_time += response_time
+                turnaround_time = non_rt_task.end_time - non_rt_task.at
+                total_turnaround_time += turnaround_time
+
+        avg_cpu_util = self.sum_utils / self.sim_time
+
+        test_out_csv.write([format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)),
+                            round(power / self.sim_time, 3),
+                            round(power_processor / self.sim_time, 3),
+                            round(power_memory / self.sim_time, 3),
+                            round(power_active / self.sim_time, 3),
+                            round(power_idle / self.sim_time, 3),
+                            round(RTTask.total_power / self.sim_time, 3),
+                            round(NonRTTask.total_power / self.sim_time, 3),
+                            format(total_wait_time / count, ".4f") if count != 0 else "Inf",
+                            format(total_response_time / count, ".4f") if count != 0 else "Inf",
+                            count,
+                            avg_cpu_util])
+
     def print_core_num(self):
         print(f'Number of core: {self.processor.n_core}')
 
@@ -105,9 +141,6 @@ class System(metaclass=ABCMeta):
         print(f'Number of non RT task: {len(self.non_rt_tasks)}')
         print(f'Average non-rt task bt: {format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks), ".4f")}')
         print(f'Number of total task: {len(self.rt_tasks)} + {len(self.non_rt_tasks)}')
-
-
-
 
     def print_policy_name(self):
         print(f'Name of policy: {self.name}')

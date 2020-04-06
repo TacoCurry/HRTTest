@@ -91,8 +91,8 @@ def dfga_run():
         flag = False
         for solution in solutions:
             if solution.is_schedule():
-                print("fictional_util: {}".format(fictional_util))
-                print("power: {}, utilization: {}".format(solution.power, solution.utilization))
+                # print("fictional_util: {}".format(fictional_util))
+                # print("power: {}, utilization: {}".format(solution.power, solution.utilization))
                 with open("input_dfga_result.txt", "a", encoding='UTF8') as f:
                     f.write("{}\n".format(fictional_util))
                     for a, b in zip(solution.genes_processor, solution.genes_memory):
