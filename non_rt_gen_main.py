@@ -23,25 +23,17 @@ def get_rt_tasks(input_file="input_rt_tasks.txt"):
 def non_rt_gen():
     sim_time, arr_rate, bt_min, bt_max, mem_total, total_memory_usage = get_input()
     mem_req_total = 0
-    period = get_period()
-    task_per_period = round(period * arr_rate)
+    # period = get_period()
+    # task_per_period: int = round(period * arr_rate)
     rt_tasks = get_rt_tasks()
     wcet_mean = round(sum([task.wcet for task in rt_tasks]) / len(rt_tasks) * 25)
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
-        time = period
         tasks = []
-        while time < sim_time:
-            if task_per_period <= 0:
-                n_task = 1 if random.random() <= period * arr_rate else 0
-            else:
-                n_task = task_per_period + int(random.randrange(task_per_period)) \
-                         - int(random.randrange(task_per_period))
-
-            for _ in range(n_task):
+        for time in range(sim_time):
+            if random.random() <= arr_rate:
                 tasks.append((time, wcet_mean + int(random.randrange(wcet_mean // 2)
                                                     - int(random.randrange(wcet_mean // 2)))))
-            time += period
 
         mem_req_1task = mem_total / len(tasks)
 
@@ -54,9 +46,9 @@ def non_rt_gen():
 
             f.write("{} {} {} {}\n".format(*task, format(mem_req, ".0f"), format(mem_active_ratio, ".6f")))
 
-    # print("\n=======================================================")
-    # print(f'mem_req_total: {format(mem_req_total, ".0f")}')
-    # print("This is the Task Generation Output")
-    # print("Generate {} tasks.".format(len(tasks)))
+    print("\n=======================================================")
+    print(f'mem_req_total: {format(mem_req_total, ".0f")}')
+    print("This is the Task Generation Output")
+    print("Generate {} tasks.".format(len(tasks)))
 
 # non_rt_gen
