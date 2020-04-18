@@ -74,6 +74,7 @@ class SystemDG(System):
             self.push_rt_wait_queue(rt_task)
 
         cur_time = 0
+        past_bt_sum = 1000000
         while cur_time < self.sim_time:
             # 1 tick 마다 실행 할
             if self.verbose != System.VERBOSE_SIMPLE:
@@ -82,13 +83,16 @@ class SystemDG(System):
                 self.print_debug(cur_time)
 
             # 1. 새로운 RT-task 및 Non-RT-task 확인하기
-            self.check_new_non_rt(cur_time)  # 새롭게 들어온 non_rt_job이 있는지 확인
+            past_bt_sum += self.check_new_non_rt(cur_time)  # 새롭게 들어온 non_rt_job이 있는지 확인
 
             if cur_time % period == 0:
-                bt_sum = sum([task.bt - task.exec_time for task in self.non_rt_queue])
-                mode = round(bt_sum / (period * self.processor.n_core) / margin) + self.mode
-                if mode > df:
+                mode = round(past_bt_sum * df / (period * (self.processor.n_core - util_original))) + self.mode
+                if mode < 0:
+                    mode = 0
+                elif mode > df:
                     mode = df
+                past_bt_sum = 0
+
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):
                     new_start_rt_task.set_exec_mode(self.processor, self.memories, 'G', mode)
                     self.push_rt_queue(new_start_rt_task)

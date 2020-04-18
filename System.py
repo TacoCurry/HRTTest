@@ -54,10 +54,15 @@ class System(metaclass=ABCMeta):
             print("=======  non_rt_queue end==========")
 
     def check_new_non_rt(self, cur_time):
+        res = 0  # bt_sum
         while self.non_rt_tasks_pointer < len(self.non_rt_tasks) and \
                 self.non_rt_tasks[self.non_rt_tasks_pointer].at == cur_time:
-            self.non_rt_queue.append(self.non_rt_tasks[self.non_rt_tasks_pointer])
+            non_rt = self.non_rt_tasks[self.non_rt_tasks_pointer]
+            self.non_rt_queue.append(non_rt)
+            res += non_rt.bt
             self.non_rt_tasks_pointer += 1
+        return res
+
 
     def check_wait_period_queue(self, cur_time):
         # rt_wait_queue에서 다음 주기의 시작을 기다리고 있는 rt_task 확인하고 새로운 주기가 시작된다면 큐 옮겨주기

@@ -44,8 +44,8 @@ class RTTask:
         return self.d < other.d
 
     def fic_set_exec_mode(self, processor, memories):
-        processor_mode = processor.modes[self.ga_processor_modes]
-        memory = memories.list[self.ga_memory_modes]
+        processor_mode = processor.modes[0]
+        memory = memories.list[0]
         self.det = self.wcet / min(processor_mode.wcet_scale, memory.wcet_scale)
 
         # task의 weight이 변경되었으므로 다시 계산해야함.
@@ -57,9 +57,6 @@ class RTTask:
         # 'G(GA)' 혹은 'O(Original)'로 실행 모드를 변경하고 det도 다시 계산.
         if self.exec_mode == mode == 'O' or (self.exec_mode == mode == 'G' and self.ga_mode == ga_mode):
             return
-
-        if not ga_mode:
-            ga_mode = processor.n_core
 
         if self.exec_mode == 'O':
             pre_processor_mode = processor.modes[0]
