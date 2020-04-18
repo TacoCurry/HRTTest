@@ -24,8 +24,8 @@ class Solution:
     def __lt__(self, other):
         return self.score < other.score
 
-    def is_schedule(self):
-        return self.utilization <= Solution.processor.n_core
+    def is_schedule(self, max_util):
+        return self.utilization <= max_util
 
     def calc_memory_with_most_tasks(self):
         # Find a memory with the most tasks
