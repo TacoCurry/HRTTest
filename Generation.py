@@ -31,11 +31,8 @@ class TaskGen:
         with open("input_rt_tasks.txt", "w", encoding='UTF8') as f:
             f.write("{}\n".format(self.n_tasks))
             util = 0
-            while util < self.util_cpu * self.n_cores:
-                # print("--------------------------")
-                # print(f'Task Number: {i + 1}')
+            for _ in range(self.n_tasks):
                 util += self.do_gen_task(f, util_cpu_1_task, mem_req_1_task)
-                # print("--------------------------")
             print("util sum: {}".format(util))
 
         # print(f'util_total_mem: {format(self.get_util_overhead_by_mem(self.mem_req_total), ".6f")}')
