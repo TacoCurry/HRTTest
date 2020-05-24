@@ -9,7 +9,7 @@ import copy
 def get_period(input_file="input/input_rt_gen.txt"):
     with open(input_file, "r", encoding='UTF8') as f:
         int(f.readline())
-        int(f.readline())
+        f.readline()
         return int(f.readline().split()[0])
 
 def get_df(input_file="input/df.txt"):
@@ -42,19 +42,17 @@ def dfga_run():
     for _ in range(df + 1):
         n_task = math.ceil(fictional_util)
         util_per_task = fictional_util / n_task if n_task else 0
-        # Solution.rt_tasks = copy.deepcopy(rt_tasks)
+        Solution.rt_tasks = copy.deepcopy(rt_tasks)
         with open("input_dfga_fictional_task_result.txt", "a+", encoding='UTF8') as f:
             f.write("{}\n".format(fictional_util))
             for _ in range(n_task):
                 f.write("{} {} {} {}\n".format(math.floor(util_per_task * period - 0.05), period, mem_req, mem_util))
-                # Solution.rt_tasks.append(RTTask(math.floor(util_per_task * period - 0.05), period, mem_req, mem_util))
+                Solution.rt_tasks.append(RTTask(math.floor(util_per_task * period - 0.05), period, mem_req, mem_util))
             f.write("\n")
 
         # 1. Make initial solution set
-        max_rt_util = Solution.processor.n_core - fictional_util
-
         Solution.set_random_seed()
-        solutions = [Solution.get_random_solution(max_rt_util)
+        solutions = [Solution.get_random_solution(Solution.processor.n_core)
                      for _ in range(ga_configs.POPULATIONS)]
         solutions.sort()  # Sort solutions by score
 
@@ -77,7 +75,7 @@ def dfga_run():
                 # 4. Check Validity
                 new_solution.calc_memory_used()
                 new_solution.calc_memory_with_most_tasks()
-                if new_solution.check_memory() and new_solution.check_utilization(max_rt_util):
+                if new_solution.check_memory() and new_solution.check_utilization(Solution.processor.n_core):
                     get_new_solution = True
                     break
 
@@ -92,7 +90,7 @@ def dfga_run():
         # 5. Print result
         flag = False
         for solution in solutions:
-            if solution.is_schedule(max_rt_util):
+            if solution.is_schedule():
                 # print("fictional_util: {}".format(fictional_util))
                 # print("power: {}, utilization: {}".format(solution.power, solution.utilization))
                 with open("input_dfga_result.txt", "a", encoding='UTF8') as f:

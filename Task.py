@@ -44,8 +44,8 @@ class RTTask:
         return self.d < other.d
 
     def fic_set_exec_mode(self, processor, memories):
-        processor_mode = processor.modes[0]
-        memory = memories.list[0]
+        processor_mode = processor.modes[self.ga_processor_modes]
+        memory = memories.list[self.ga_memory_modes]
         self.det = self.wcet / min(processor_mode.wcet_scale, memory.wcet_scale)
 
         # task의 weight이 변경되었으므로 다시 계산해야함.

@@ -6,7 +6,7 @@ import heapq
 def get_period(input_file="input/input_rt_gen.txt"):
     with open(input_file, "r", encoding='UTF8') as f:
         int(f.readline())
-        int(f.readline())
+        f.readline()
         return int(f.readline().split()[0])
 
 
@@ -57,7 +57,7 @@ class SystemDG(System):
     def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks, mode):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
         self.name = "D"
-        self.mode = mode
+        self.mode = 1
 
     def run(self):
         util_original = self.calc_original_util()
