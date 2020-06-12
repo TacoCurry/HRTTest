@@ -113,7 +113,13 @@ class System(metaclass=ABCMeta):
 
         total_wait_time = total_response_time = total_turnaround_time = count = 0
 
+        import none_rt_out_csv
+        file_name = "response_time_tracking_{}.csv".format(self.name)
+        none_rt_out_csv.init(file_name)
+
         for non_rt_task in self.non_rt_tasks:
+            none_rt_out_csv.write(file_name,
+                                  [non_rt_task.no, non_rt_task.at, non_rt_task.start_time])
             if non_rt_task.end_time:
                 count += 1
                 wait_time = (non_rt_task.end_time - non_rt_task.at) - non_rt_task.bt

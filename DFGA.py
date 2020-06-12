@@ -32,7 +32,7 @@ def dfga_run():
 
     # Get total utils
     original_utils = sum([task.wcet / task.period for task in rt_tasks]) * 1.02
-    print("Original Total util: {}".format(original_utils))
+    print("Real time tasks util sum: {}".format(original_utils))
     fictional_util = 0
     margin = (Solution.processor.n_core - original_utils) / df
 
@@ -91,8 +91,10 @@ def dfga_run():
         flag = False
         for solution in solutions:
             if solution.is_schedule():
-                # print("fictional_util: {}".format(fictional_util))
-                # print("power: {}, utilization: {}".format(solution.power, solution.utilization))
+                print("========================================================")
+                print("fictional tasks util: {}".format(fictional_util))
+                print("power: {}, utilization: {}".format(solution.power, solution.utilization))
+                print("========================================================")
                 with open("input_dfga_result.txt", "a", encoding='UTF8') as f:
                     f.write("{}\n".format(fictional_util))
                     for a, b in zip(solution.genes_processor, solution.genes_memory):
