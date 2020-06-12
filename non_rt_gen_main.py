@@ -1,14 +1,39 @@
 from utility import *
 import random
+from Task import RTTask
+
+
+def get_period(input_file="input/input_rt_gen.txt"):
+    with open(input_file, "r", encoding='UTF8') as f:
+        int(f.readline())
+        int(f.readline())
+        return int(f.readline().split()[0])
+
+
+def get_rt_tasks(input_file="input_rt_tasks.txt"):
+    rt_tasks = []
+    with open(input_file, "r", encoding='UTF-8') as f:
+        for i in range(int(f.readline())):
+            line = f.readline().split()
+            rt_tasks.append(RTTask(i, *map(int, line[:3]), float(line[3])))
+
+    return rt_tasks
 
 
 def non_rt_gen():
     sim_time, arr_rate, bt_min, bt_max, mem_total, total_memory_usage = get_input()
     mem_req_total = 0
+    # period = get_period()
+    # task_per_period: int = round(period * arr_rate)
+    rt_tasks = get_rt_tasks()
+    wcet_mean = round(sum([task.wcet for task in rt_tasks]) / len(rt_tasks) * 25)
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
-        tasks = [(cur_time, random.randint(bt_min, bt_max))
-                 for cur_time in range(sim_time) if random.random() <= arr_rate]
+        tasks = []
+        for time in range(sim_time):
+            if random.random() <= arr_rate:
+                tasks.append((time, wcet_mean + int(random.randrange(wcet_mean // 2)
+                                                    - int(random.randrange(wcet_mean // 2)))))
 
         mem_req_1task = mem_total / len(tasks)
 
@@ -25,6 +50,5 @@ def non_rt_gen():
     print(f'mem_req_total: {format(mem_req_total, ".0f")}')
     print("This is the Task Generation Output")
     print("Generate {} tasks.".format(len(tasks)))
-
 
 # non_rt_gen

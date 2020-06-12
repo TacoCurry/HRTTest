@@ -31,10 +31,10 @@ class RTTask:
         self.deadline = None  # 이번 주기의 데드라인을 시간에 대한 절대적 값으로 저장
         self.next_period_start = 0  # 다음 주기의 시작을 저장
 
-    def desc_task(self) -> str:
+    def desc_task(self, cur_time) -> str:
         return (f'    [type:RT, no:{self.no}, wcet:{self.wcet}, period:{self.period}, ' +
                 f'det:{self.det}, i_job:{self.i_job}, exec_mode:{self.exec_mode}, ga_mode:{self.ga_mode}, deadline:{self.deadline}, ' +
-                "d:{}, D:{}, b:{}]".format(self.d, self.D, self.b))
+                "d:{}, D:{}, b:{}]".format(self.d, self.D, self.b) + "lag:{}".format((cur_time - self.deadline + self.period) * self.det / self.period - self.i_job + 1))
 
     def __lt__(self, other):
         if self.d == other.d:
@@ -43,13 +43,20 @@ class RTTask:
             return self.b > other.b
         return self.d < other.d
 
+    def fic_set_exec_mode(self, processor, memories):
+        processor_mode = processor.modes[self.ga_processor_modes]
+        memory = memories.list[self.ga_memory_modes]
+        self.det = self.wcet / min(processor_mode.wcet_scale, memory.wcet_scale)
+
+        # task의 weight이 변경되었으므로 다시 계산해야함.
+        self.calc_d_for_pd2()
+        self.calc_D_for_pd2()
+        self.calc_b_for_pd2()
+
     def set_exec_mode(self, processor, memories, mode, ga_mode=None):
         # 'G(GA)' 혹은 'O(Original)'로 실행 모드를 변경하고 det도 다시 계산.
         if self.exec_mode == mode == 'O' or (self.exec_mode == mode == 'G' and self.ga_mode == ga_mode):
             return
-
-        if not ga_mode:
-            ga_mode = processor.n_core
 
         if self.exec_mode == 'O':
             pre_processor_mode = processor.modes[0]
@@ -69,7 +76,7 @@ class RTTask:
         det_remain = self.det - det_executed
         changed_det_remain = det_remain * min(pre_processor_mode.wcet_scale, pre_memory.wcet_scale) / min(
             new_processor_mode.wcet_scale, new_memory.wcet_scale)
-        self.det = math.floor(det_executed + changed_det_remain)
+        self.det = det_executed + changed_det_remain
         if self.det == 0:
             self.det = 1
 
@@ -122,11 +129,11 @@ class RTTask:
 
     def is_deadline_violated(self, cur_time):
         if self.deadline <= cur_time:
-            raise Exception(self.desc_task() + ": deadline failure")
+            raise Exception(self.desc_task(cur_time) + ": deadline failure")
         return True
 
     def is_finish(self):
-        return self.i_job >= self.det + 1
+        return self.i_job >= math.ceil(self.det) + 1
 
     def exec_idle(self, memories, quantum=1):
         memory = memories.list[0] if self.exec_mode == 'O' else memories.list[self.ga_memory_modes[self.ga_mode]]

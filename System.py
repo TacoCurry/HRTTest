@@ -41,7 +41,7 @@ class System(metaclass=ABCMeta):
             print("==========rt_queue===========")
             while len(self.rt_queue) > 0:
                 rt_task = heapq.heappop(self.rt_queue)
-                print(rt_task.desc_task())
+                print(rt_task.desc_task(time))
                 temp_queue.append(rt_task)
             print("========rt_queue_end=========")
             heapq.heapify(temp_queue)
@@ -54,10 +54,15 @@ class System(metaclass=ABCMeta):
             print("=======  non_rt_queue end==========")
 
     def check_new_non_rt(self, cur_time):
-        if self.non_rt_tasks_pointer < len(self.non_rt_tasks) and \
+        res = 0  # bt_sum
+        while self.non_rt_tasks_pointer < len(self.non_rt_tasks) and \
                 self.non_rt_tasks[self.non_rt_tasks_pointer].at == cur_time:
-            self.non_rt_queue.append(self.non_rt_tasks[self.non_rt_tasks_pointer])
+            non_rt = self.non_rt_tasks[self.non_rt_tasks_pointer]
+            self.non_rt_queue.append(non_rt)
+            res += non_rt.bt
             self.non_rt_tasks_pointer += 1
+        return res
+
 
     def check_wait_period_queue(self, cur_time):
         # rt_wait_queue에서 다음 주기의 시작을 기다리고 있는 rt_task 확인하고 새로운 주기가 시작된다면 큐 옮겨주기
@@ -77,13 +82,14 @@ class System(metaclass=ABCMeta):
 
     def check_rt_tasks(self, cur_time):
         for rt_task in self.rt_tasks:
-            rt_task.is_deadline_violated(cur_time)
+            if rt_task.no < len(self.rt_tasks):
+                rt_task.is_deadline_violated(cur_time)
 
     def add_cpu_utilization(self, util):
         self.sum_utils += util
 
     def calc_original_util(self):
-        return sum([task.wcet/task.period for task in self.rt_tasks])
+        return sum([task.wcet / task.period for task in self.rt_tasks])
 
     def print_final_report(self):
         print("===============final report===============")
@@ -96,12 +102,55 @@ class System(metaclass=ABCMeta):
         self.print_util()
         print("===========================================")
 
+        import test_out_csv
+        self.memories.calc_total_power_consumed()
+
+        power_processor = self.processor.power_consumed_idle + self.processor.power_consumed_active
+        power_memory = self.memories.total_power_consumed_idle + self.memories.total_power_consumed_active
+        power_active = self.processor.power_consumed_active + self.memories.total_power_consumed_active
+        power_idle = self.processor.power_consumed_idle + self.memories.total_power_consumed_idle
+        power = power_processor + power_memory
+
+        total_wait_time = total_response_time = total_turnaround_time = count = 0
+
+        import none_rt_out_csv
+        file_name = "response_time_tracking_{}.csv".format(self.name)
+        none_rt_out_csv.init(file_name)
+
+        for non_rt_task in self.non_rt_tasks:
+            none_rt_out_csv.write(file_name,
+                                  [non_rt_task.no, non_rt_task.at, non_rt_task.start_time])
+            if non_rt_task.end_time:
+                count += 1
+                wait_time = (non_rt_task.end_time - non_rt_task.at) - non_rt_task.bt
+                total_wait_time += wait_time
+                response_time = non_rt_task.start_time - non_rt_task.at
+                total_response_time += response_time
+                turnaround_time = non_rt_task.end_time - non_rt_task.at
+                total_turnaround_time += turnaround_time
+
+        avg_cpu_util = self.sum_utils / self.sim_time
+
+        test_out_csv.write([format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)),
+                            round(power / self.sim_time, 3),
+                            round(power_processor / self.sim_time, 3),
+                            round(power_memory / self.sim_time, 3),
+                            round(power_active / self.sim_time, 3),
+                            round(power_idle / self.sim_time, 3),
+                            round(RTTask.total_power / self.sim_time, 3),
+                            round(NonRTTask.total_power / self.sim_time, 3),
+                            format(total_wait_time / count, ".4f") if count != 0 else "Inf",
+                            format(total_response_time / count, ".4f") if count != 0 else "Inf",
+                            count,
+                            avg_cpu_util])
+
     def print_core_num(self):
         print(f'Number of core: {self.processor.n_core}')
 
     def print_task_num(self):
         print(f'Number of RT task: {len(self.rt_tasks)}')
         print(f'Number of non RT task: {len(self.non_rt_tasks)}')
+        print(f'Average non-rt task bt: {format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks), ".4f")}')
         print(f'Number of total task: {len(self.rt_tasks)} + {len(self.non_rt_tasks)}')
 
     def print_policy_name(self):

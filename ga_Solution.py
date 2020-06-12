@@ -1,4 +1,5 @@
 import random
+import math
 
 
 class Solution:
@@ -83,7 +84,7 @@ class Solution:
             # Calc det
             wcet_scaled_processor = 1 / processor_mode.wcet_scale
             wcet_scaled_memory = 1 / memory.wcet_scale
-            det = round(task.wcet * max(wcet_scaled_memory, wcet_scaled_processor))
+            det = math.ceil(task.wcet * max(wcet_scaled_memory, wcet_scaled_processor))
             if det == 0:
                 det = 1
             if det > task.period:
@@ -113,7 +114,7 @@ class Solution:
         self.utilization = util_sum
         self.power = power_sum
         self.score = power_sum
-        if util_sum >= n_core:
+        if util_sum >= n_core - 0.01:
             # Apply penalty for score
             self.score += power_sum * (util_sum - n_core) * Solution.ga_configs.PENALTY_RATIO
         return True
