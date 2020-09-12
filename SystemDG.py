@@ -53,6 +53,7 @@ def set_ga_results(rt_tasks, fic_tasks, df, input_file="input_dfga_result.txt"):
                     fic_tasks[i][task_no - len(rt_tasks)].ga_processor_modes = int(line[0])
                     fic_tasks[i][task_no - len(rt_tasks)].ga_memory_modes = int(line[1])
 
+
 class SystemDG(System):
     def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks, mode):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
@@ -88,7 +89,12 @@ class SystemDG(System):
             past_bt_sum += self.check_new_non_rt(cur_time)  # 새롭게 들어온 non_rt_job이 있는지 확인
 
             if cur_time % period == 0:
-                mode = round(past_bt_sum * df / (period * (self.processor.n_core - util_original))) + self.mode
+                remain_burst_time_sum = 0
+                for non_rt_task in self.non_rt_queue:
+                    remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
+
+                mode = round((past_bt_sum + remain_burst_time_sum) * df / (
+                            period * (self.processor.n_core - util_original))) + self.mode
                 if mode < 0:
                     mode = 0
                 elif mode > df:
