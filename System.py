@@ -211,7 +211,6 @@ class System(metaclass=ABCMeta):
             with open('burst_time_track_result_O.txt', 'w'):
                 pass
 
-
     def print_remain_burst_time_track(self, current_time):
         remain_burst_time_sum = 0
         for non_rt_task in self.non_rt_queue:
