@@ -200,10 +200,11 @@ class System(metaclass=ABCMeta):
 
     def init_remain_burst_time_track(self):
         # 처음에 파일 기록할 수 있도록 초기화하기
+        # burst_time_track_result_D
+        # burst_time_track_result_O
         pass
 
     def print_remain_burst_time_track(self, current_time):
         # 매 타임마다 호출되는 함수
         # Init_remain_burst_time_track 에서 초기화한 파일에 현재 remain burst time 합 기록하기
         pass
-ㅊ
