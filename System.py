@@ -215,5 +215,5 @@ class System(metaclass=ABCMeta):
         remain_burst_time_sum = 0
         for non_rt_task in self.non_rt_queue:
             remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
-        with open("burst_time_track_result_{}".format(self.name), 'a') as f:
-            f.write("{},{}".format(current_time, remain_burst_time_sum))
+        with open("burst_time_track_result_{}.txt".format(self.name), 'a') as f:
+            f.write("{},{}\n".format(current_time, remain_burst_time_sum))
