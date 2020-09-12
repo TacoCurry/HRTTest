@@ -60,6 +60,8 @@ class SystemDG(System):
         self.mode = 1
 
     def run(self):
+        self.init_remain_burst_time_track()
+
         util_original = self.calc_original_util()
         df = get_df()
         margin = (self.processor.n_core - util_original) / df
@@ -103,6 +105,8 @@ class SystemDG(System):
                     fic_task.det = fic_task.wcet
                     fic_task.fic_set_exec_mode(self.processor, self.memories)
                     self.push_rt_queue(fic_task)
+
+            self.print_remain_burst_time_track(cur_time)  # burst_time_tracking 결과 출력
 
             # 2. 이번 퀀텀에 실행될 Task 고르기
             rt_exec_tasks = []

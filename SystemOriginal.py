@@ -11,6 +11,8 @@ class SystemOriginal(System):
         self.name = "O"
 
     def run(self):
+        self.init_remain_burst_time_track()
+
         # Initialize rt-tasks
         for rt_task in self.rt_tasks:
             rt_task.set_job()
@@ -28,6 +30,8 @@ class SystemOriginal(System):
             # 새롭게 주기 시작하는 job이 있는지 확인
             for new_start_rt_task in self.check_wait_period_queue(cur_time):
                 self.push_rt_queue(new_start_rt_task)
+
+            self.print_remain_burst_time_track(cur_time)  # burst_time_tracking 결과 출력
 
             # 2. 이번 퀀텀에 실행될 Task 고르기
             rt_exec_tasks = []

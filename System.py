@@ -205,6 +205,8 @@ class System(metaclass=ABCMeta):
         pass
 
     def print_remain_burst_time_track(self, current_time):
-        # 매 타임마다 호출되는 함수
-        # Init_remain_burst_time_track 에서 초기화한 파일에 현재 remain burst time 합 기록하기
-        pass
+        remain_burst_time_sum = 0
+        for non_rt_task in self.non_rt_queue:
+            remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
+        with open("burst_time_track_result_{}".format(self.name), 'a') as f:
+            f.write("{},{}".format(current_time, remain_burst_time_sum))
