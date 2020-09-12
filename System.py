@@ -202,7 +202,15 @@ class System(metaclass=ABCMeta):
         # 처음에 파일 기록할 수 있도록 초기화하기
         # burst_time_track_result_D
         # burst_time_track_result_O
-        pass
+
+        if self.name == 'D':
+            with open('burst_time_track_result_D.txt', 'w'):
+                pass
+
+        if self.name == 'O':
+            with open('burst_time_track_result_O.txt', 'w'):
+                pass
+
 
     def print_remain_burst_time_track(self, current_time):
         # 매 타임마다 호출되는 함수
