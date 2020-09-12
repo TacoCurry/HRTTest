@@ -197,3 +197,13 @@ class System(metaclass=ABCMeta):
         print(f'Average wait time: {format(total_wait_time / count, ".4f") if count != 0 else "Inf"}')
         print(f'Average response time: {format(total_response_time / count, ".4f") if count != 0 else "Inf"}')
         print(f'Average turnaround time: {format(total_turnaround_time / count, ".4f") if count != 0 else "Inf"}')
+
+    def init_remain_burst_time_track(self):
+        # 처음에 파일 기록할 수 있도록 초기화하기
+        pass
+
+    def print_remain_burst_time_track(self, current_time):
+        # 매 타임마다 호출되는 함수
+        # Init_remain_burst_time_track 에서 초기화한 파일에 현재 remain burst time 합 기록하기
+        pass
+ㅊ
