@@ -1,4 +1,4 @@
-10000
+100000
 0.005
 10 30
 2000 100
@@ -8,3 +8,8 @@
 # burst time range(MIN, MAX)
 # mem_total
 # total_memory_usage
+
+# 4행 말고 나머지는 전혀 쓰이지 않음.
+# non_rt_gen_main에 하드코딩 되어 있음.
+
+# 생성 주기 1000, 개수 100개, 시뮬레이션 시간 100000
