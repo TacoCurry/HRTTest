@@ -30,11 +30,11 @@ def non_rt_gen():
 
     # 하드코딩함 9월 29일
     sim_time = 100000
-    bt_min, bt_max = 200, 300
+    bt_min, bt_max = 30, 40
     period = 500
     # arr_rate_min = 10
     # arr_rate_max = 50
-    arr_rate_list = [10, 20, 30, 40, 50]
+    arr_rate_list = [0.3, 0.6, 0.9, 1.2, 1.5]
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
         tasks = []
@@ -42,10 +42,10 @@ def non_rt_gen():
         cur_time = 0
         while cur_time < sim_time:
             if cur_time % period == 0:
-                bt = random.randint(bt_min, bt_max)
-                arr_rate = random.choice(arr_rate_list)/100
-            tasks.append((int(cur_time), bt))
-            cur_time += period * arr_rate
+                arr_rate = random.choice(arr_rate_list)
+            if random.uniform(0, 100) < arr_rate:
+                tasks.append((int(cur_time), random.randint(bt_min, bt_max)))
+            cur_time += 1
 
         mem_req_1task = mem_total / len(tasks)
 
