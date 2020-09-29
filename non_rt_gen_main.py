@@ -28,20 +28,24 @@ def non_rt_gen():
     # rt_tasks = get_rt_tasks()
     # wcet_mean = round(sum([task.wcet for task in rt_tasks]) / len(rt_tasks) * 25)
 
-    # 하드코딩함 9월 19일
+    # 하드코딩함 9월 29일
     sim_time = 100000
-    bt_min, bt_max = 10, 100
-    period = 1000
+    bt_min, bt_max = 200, 300
+    period = 500
+    # arr_rate_min = 10
+    # arr_rate_max = 50
+    arr_rate_list = [10, 20, 30, 40, 50]
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
         tasks = []
 
         cur_time = 0
         while cur_time < sim_time:
-            bt = random.randint(bt_min, bt_max)
-            tasks.append((cur_time, bt))
-
-            cur_time += period
+            if cur_time % period == 0:
+                bt = random.randint(bt_min, bt_max)
+                arr_rate = random.choice(arr_rate_list)/100
+            tasks.append((int(cur_time), bt))
+            cur_time += period * arr_rate
 
         mem_req_1task = mem_total / len(tasks)
 
