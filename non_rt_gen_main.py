@@ -34,7 +34,9 @@ def non_rt_gen():
     period = 500
     # arr_rate_min = 10
     # arr_rate_max = 50
-    arr_rate_list = [0.3, 0.6, 0.9, 1.2, 1.5]
+    # arr_rate_list = [0.3, 0.6, 0.9, 1.2, 1.5]
+    arr_rate_small, arr_rate_big = 0.3, 1.5
+    change_time = 50000
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
         tasks = []
@@ -42,7 +44,7 @@ def non_rt_gen():
         cur_time = 0
         while cur_time < sim_time:
             if cur_time % period == 0:
-                arr_rate = random.choice(arr_rate_list)
+                arr_rate = arr_rate_small if cur_time < change_time else arr_rate_big
             if random.uniform(0, 100) < arr_rate:
                 tasks.append((int(cur_time), random.randint(bt_min, bt_max)))
             cur_time += 1
