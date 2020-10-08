@@ -34,8 +34,10 @@ def non_rt_gen():
     period = 200
     # arr_rate_min = 10
     # arr_rate_max = 50
-    arr_rate_list_1 = [0.8, 0.9, 1, 1.1]
-    arr_rate_list_2 = [2.3, 2.4, 2.5, 2.6]
+    arr_rate_list_1 = [0.85]
+    arr_rate_list_2 = [2.65]
+    arr_rate_list_3 = [1.35]
+
     arr_rate_small, arr_rate_big = 1, 2.75
     change_time = 5000
 
@@ -44,9 +46,15 @@ def non_rt_gen():
 
         cur_time = 0
         while cur_time < sim_time:
+
             if cur_time % period == 0:
                 arr_rate = random.choice(arr_rate_list_1) if cur_time < change_time else random.choice(arr_rate_list_2)
-                #arr_rate = random.choice(arr_rate_list)
+            # if cur_time >= change_time  and cur_time <= change_time + 2 * period:
+            #     arr_rate = random.choice(arr_rate_list_2)
+            #     bt_min, bt_max = 50, 60
+            # if cur_time > change_time + 2 * period:
+            #     arr_rate = random.choice(arr_rate_list_3)
+            #     bt_min, bt_max = 35, 45
             if random.uniform(0, 100) < arr_rate:
                 tasks.append((int(cur_time), random.randint(bt_min, bt_max)))
             cur_time += 1
