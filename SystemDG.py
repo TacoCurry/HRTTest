@@ -93,13 +93,14 @@ class SystemDG(System):
                 for non_rt_task in self.non_rt_queue:
                     remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
 
-                mode = 2
-                # mode = round((past_bt_sum + remain_burst_time_sum) * df / (
-                #             period * (self.processor.n_core - util_original))) + self.mode
-                # if mode < 0:
-                #     mode = 0
-                # elif mode > df:
-                #     mode = df
+                #mode = 2
+                if cur_time < 5000 or cur_time < 6000:
+                    mode = round((past_bt_sum + remain_burst_time_sum) * df / (
+                                period * (self.processor.n_core - util_original))) + self.mode
+                    if mode < 0:
+                        mode = 0
+                    elif mode > df:
+                        mode = df
                 past_bt_sum = 0
 
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):
