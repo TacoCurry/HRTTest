@@ -52,10 +52,10 @@ def non_rt_gen():
                     # if cur_time < change_time else random.choice(arr_rate_list_2)
             if cur_time > change_time  and cur_time <= change_time + 5 * period:
                 arr_rate = random.choice(arr_rate_list_2)
-                bt_min, bt_max = 50, 60
+                bt_min, bt_max = 70, 80
             if cur_time > change_time + 5 * period:
-                arr_rate = random.choice(arr_rate_list_3)
-                bt_min, bt_max = 35, 40
+                arr_rate = random.choice(arr_rate_list_2)
+                bt_min, bt_max = 35, 50
             if cur_time == change_time:
                 # arr_rate = 2.8
                 bt_min, bt_max = 250, 300
