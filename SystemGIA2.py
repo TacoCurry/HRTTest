@@ -54,10 +54,10 @@ def set_ga_results(rt_tasks, fic_tasks, df, input_file="input_dfga_result.txt"):
                     fic_tasks[i][task_no - len(rt_tasks)].ga_memory_modes = int(line[1])
 
 
-class SystemDG(System):
+class SystemGIA2(System):
     def __init__(self, sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks, mode):
         super().__init__(sim_time, verbose, processor, memories, rt_tasks, non_rt_tasks)
-        self.name = "D"
+        self.name = "SystemGIA2"
         self.mode = 1
 
     def run(self):
@@ -93,12 +93,7 @@ class SystemDG(System):
                 for non_rt_task in self.non_rt_queue:
                     remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
 
-                mode = round((past_bt_sum + remain_burst_time_sum) * df / (
-                        period * (self.processor.n_core - util_original))) + self.mode
-                if mode < 0:
-                    mode = 0
-                elif mode > df:
-                    mode = df
+                mode = df
                 past_bt_sum = 0
 
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):

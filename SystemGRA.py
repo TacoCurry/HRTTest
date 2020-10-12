@@ -2,7 +2,7 @@ from System import System
 import heapq
 
 
-class SystemRS(System):
+class SystemGRA(System):
     # 대기중인 non-rt-task가 존재하면 rt task는 (N-1) 개의 코어로 실행하고
     # 1개의 코어로는 non-rt-task를 수행한다.
     # 존재하지 않는다면 유전 알고리즘 결과를 이용하여 N개의 코어에서 실행.
