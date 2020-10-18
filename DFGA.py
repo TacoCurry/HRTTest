@@ -36,8 +36,9 @@ def dfga_run():
     fictional_util = 0
     margin = (Solution.processor.n_core - original_utils) / df
 
-    mem_req = max([task.mem_req for task in rt_tasks])
-    mem_util = max([task.mem_active_ratio for task in rt_tasks])
+    # mem_req = max([task.mem_req for task in rt_tasks])
+    # mem_util = max([task.mem_active_ratio for task in rt_tasks])
+    mem_req = mem_util = 0
 
     for _ in range(df + 1):
         n_task = math.ceil(fictional_util)
