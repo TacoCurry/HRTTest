@@ -139,17 +139,17 @@ class System(metaclass=ABCMeta):
 
         avg_cpu_util = self.sum_utils / self.sim_time
 
-        test_out_csv.write([format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)),
+        test_out_csv.write([#format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks)),
                             round(power / self.sim_time, 3),
-                            round(power_processor / self.sim_time, 3),
-                            round(power_memory / self.sim_time, 3),
-                            round(power_active / self.sim_time, 3),
-                            round(power_idle / self.sim_time, 3),
-                            round(RTTask.total_power / self.sim_time, 3),
-                            round(NonRTTask.total_power / self.sim_time, 3),
+                            #round(power_processor / self.sim_time, 3),
+                            #round(power_memory / self.sim_time, 3),
+                            #round(power_active / self.sim_time, 3),
+                            #round(power_idle / self.sim_time, 3),
+                            #round(RTTask.total_power / self.sim_time, 3),
+                            #round(NonRTTask.total_power / self.sim_time, 3),
                             format(total_wait_time / count, ".4f") if count != 0 else "Inf",
                             format(total_response_time / count, ".4f") if count != 0 else "Inf",
-                            count,
+                            #count,
                             avg_cpu_util])
 
     def print_core_num(self):
@@ -158,7 +158,7 @@ class System(metaclass=ABCMeta):
     def print_task_num(self):
         print(f'Number of RT task: {len(self.rt_tasks)}')
         print(f'Number of non RT task: {len(self.non_rt_tasks)}')
-        print(f'Average non-rt task bt: {format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks), ".4f")}')
+        #print(f'Average non-rt task bt: {format(sum([non_rt_task.bt for non_rt_task in self.non_rt_tasks]) / len(self.non_rt_tasks), ".4f")}')
         print(f'Number of total task: {len(self.rt_tasks)} + {len(self.non_rt_tasks)}')
 
     def print_policy_name(self):

@@ -34,7 +34,7 @@ def dfga_run():
     original_utils = sum([task.wcet / task.period for task in rt_tasks]) * 1.02
     print("Real time tasks util sum: {}".format(original_utils))
     fictional_util = 0
-    margin = (Solution.processor.n_core - original_utils) / df
+    #margin = (Solution.processor.n_core - original_utils) / df
 
     mem_req = max([task.mem_req for task in rt_tasks])
     mem_util = max([task.mem_active_ratio for task in rt_tasks])
@@ -104,6 +104,6 @@ def dfga_run():
                 break
         if not flag:
             raise Exception
-        fictional_util += margin
+        #fictional_util += margin
 
 # run()

@@ -18,35 +18,41 @@ class TaskGen:
         self.get_input()
 
     def gen_task(self):
-        self.n_tasks = round(self.util_cpu * self.n_cores / (((self.wcet_max + self.wcet_min) / 2) / self.period))
-
-        util_cpu_1_task = self.util_cpu / self.n_tasks * self.n_cores
-        mem_req_1_task = self.total_mem_usage / self.n_tasks
-
-        # print("=======================================================")
-        # print(f'util_cpu_1task:{format(util_cpu_1_task, ".6f")}')
-        # print(f'memreq_1task: {format(mem_req_1_task, ".0f")}')
-        # print("=======================================================")
-        #
         with open("input_rt_tasks.txt", "w", encoding='UTF8') as f:
-            f.write("{}\n".format(self.n_tasks))
             util = 0
-            for _ in range(self.n_tasks):
-                util += self.do_gen_task(f, util_cpu_1_task, mem_req_1_task)
-            print("util sum: {}".format(util))
+            while True:
+                util += self.do_gen_task(f)
+                if util >= self.util_cpu:
+                    print("util sum: {}".format(util))
+                    break
 
-        # print(f'util_total_mem: {format(self.get_util_overhead_by_mem(self.mem_req_total), ".6f")}')
-        # print(f'util_total_cpu: {format(self.util_sum_cpu, ".6f")}')
-        # print(f'mem_req_total: {format(self.mem_req_total, ".0f")}')
+    def do_gen_task(self, input_file):
+        class rt_param:
+            def __init__(self, name, period, wcet, mem_usage_ratio):
+                self.name = name
+                self.period = period  # ms
+                self.wcet = wcet  # ms
+                self.mem_usage_ratio = mem_usage_ratio  # ms
 
-    def do_gen_task(self, input_file, util_cpu_1_task, mem_req_1_task):
-        wcet = self.wcet_min + self.get_rand(self.wcet_max - self.wcet_min)
-        # duration = wcet / util_cpu_1_task + int(self.get_rand(wcet / util_cpu_1_task / 2)) - int(self.get_rand(wcet / util_cpu_1_task / 2))
-        duration = self.period
-        # wcet = int(duration * util_cpu_1_task) + int(self.get_rand(duration * util_cpu_1_task)) - int(self.get_rand(duration * util_cpu_1_task))
-        if wcet == 0:
-            wcet = 1
-        memreq = mem_req_1_task + int(self.get_rand(mem_req_1_task / 2)) - int(self.get_rand(mem_req_1_task / 2))
+        rt_params = [rt_param("serial", 78, 1, 0.1),
+                     rt_param("length", 78, 10, 0.1),
+                     rt_param("way point", 234, 25, 0.25),
+                     rt_param("encoder", 234, 4, 0.25),
+                     rt_param("pid", 234, 10, 0.2),
+                     rt_param("motor", 234, 3, 0.1),
+                     rt_param("sense temperature", 10000, 1, 0.04),
+                     rt_param("send data to server", 60000, 6, 0.12),
+                     rt_param("sense vibration", 100, 6, 0.1),
+                     rt_param("compress and send", 1000, 8, 0.24),
+                     rt_param("get info & calc", 10, 1, 0.12),
+                     rt_param("control machine", 10, 1, 0.05),
+                     rt_param("update gui", 1000, 20, 0.33)]
+
+        rt = random.choice(rt_params)
+
+        wcet = rt.wcet
+        duration = rt.period
+        memreq = self.mem_total * rt.mem_usage_ratio
         mem_active_ratio = 0.1 + self.get_rand(1000) / 10000.0 - self.get_rand(1000) / 10000.0
 
         self.util_sum_cpu += wcet / duration

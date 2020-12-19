@@ -1,7 +1,7 @@
 10000
 0.005
 10 30
-4000 100
+2000 100
 
 # Simulation time
 # Arrival rate

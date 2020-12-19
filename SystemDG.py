@@ -65,7 +65,7 @@ class SystemDG(System):
 
         util_original = self.calc_original_util()
         df = get_df()
-        margin = (self.processor.n_core - util_original) / df
+        #margin = (self.processor.n_core - util_original) / df
         period = get_period()
         fic_tasks, fic_util = get_fic_tasks(self.rt_tasks, df)
         set_ga_results(self.rt_tasks, fic_tasks, df)
@@ -93,12 +93,13 @@ class SystemDG(System):
                 for non_rt_task in self.non_rt_queue:
                     remain_burst_time_sum += non_rt_task.bt - non_rt_task.exec_time
 
-                mode = round((past_bt_sum + remain_burst_time_sum) * df / (
-                        period * (self.processor.n_core - util_original))) + self.mode
-                if mode < 0:
-                    mode = 0
-                elif mode > df:
-                    mode = df
+                # mode = round((past_bt_sum + remain_burst_time_sum) * df / (
+                #         period * (self.processor.n_core - util_original))) + self.mode
+                # if mode < 0:
+                #     mode = 0
+                # elif mode > df:
+                #     mode = df
+                mode = 0
                 past_bt_sum = 0
 
                 for new_start_rt_task in self.check_wait_period_queue(cur_time):
