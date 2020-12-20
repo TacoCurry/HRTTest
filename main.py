@@ -7,7 +7,7 @@ import test_out_csv
 
 test_out_csv.init()
 
-for i in range(3):
+for i in range(1):
     TaskGen().gen_task()
     non_rt_gen()
     dfga_run()
