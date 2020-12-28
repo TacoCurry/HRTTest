@@ -42,19 +42,20 @@ class TaskGen:
                 self.wcet = wcet  # ms
                 self.mem_usage_ratio = mem_usage_ratio  # ms
 
-        rt_params = [rt_param("serial", 100, 1, 0.1),
-                     rt_param("length",100, 12, 0.1),
-                     rt_param("way point", 100, 10, 0.25),
-                     rt_param("encoder", 100, 2, 0.25),
-                     rt_param("pid", 100, 10, 0.2),
-                     rt_param("motor", 100, 4, 0.1),
-                     # rt_param("sense temperature", 10000, 1, 0.04),
-                     # rt_param("send data to server", 60000, 6, 0.12),
-                     # rt_param("sense vibration", 1000, 60, 0.1),
-                     # rt_param("compress and send", 100000, 800, 0.24),
-                     # rt_param("get info & calc", 1000, 100, 0.12),
-                     # rt_param("control machine", 1000, 100, 0.05),
-                     # rt_param("update gui", 100000, 2000, 0.33)
+        rt_params = [
+                # rt_param("serial", 100, 1, 0.1),
+        #              rt_param("length",100, 12, 0.1),
+        #              rt_param("way point", 100, 10, 0.25),
+        #              rt_param("encoder", 100, 2, 0.25),
+        #              rt_param("pid", 100, 10, 0.2),
+        #              rt_param("motor", 100, 4, 0.1),
+                     rt_param("sense temperature", 10000, 1, 0.04),
+                     rt_param("send data to server", 10000, 1, 0.12),
+                     rt_param("sense vibration", 100, 6, 0.1),
+                     rt_param("compress and send", 1000, 8, 0.24),
+                     rt_param("get info & calc", 100, 10, 0.12),
+                     rt_param("control machine", 100, 10, 0.05),
+                     rt_param("update gui", 100, 2, 0.33)
                      ]
 
         rt = random.choice(rt_params)

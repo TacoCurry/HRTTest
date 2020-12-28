@@ -25,9 +25,9 @@ def non_rt_gen():
     mem_req_total = 0
 
     # 하드코딩함 9월 29일
-    sim_time = 10000
-    bt_min, bt_max = 30,40
-    arr_rate = 2.4
+    sim_time = 100000
+    bt_min, bt_max = 30, 40
+    arr_rate = 0.2
 
     with open('input_nonrt_tasks.txt', 'w', encoding='utf-8') as f:
         tasks = []
